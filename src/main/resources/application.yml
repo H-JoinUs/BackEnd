@@ -1,6 +1,7 @@
 spring:
   jpa:
-    hibernate: ddl-auto=update
+    hibernate:
+      ddl-auto: create
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://127.0.0.1:3306/joinUs
