@@ -1,13 +1,14 @@
 package H.joinUs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity{
@@ -16,10 +17,14 @@ public class Post extends BaseEntity{
     private Long id;
     private String title;
     private String content;
-    private String createdAt;
-    private String updatedAt;
+
+    @JsonIgnoreProperties
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    public void update(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 }
