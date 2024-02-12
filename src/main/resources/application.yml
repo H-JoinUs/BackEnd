@@ -1,9 +1,9 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/joinUs
-    username: root
-    password: mkhb2002*
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
