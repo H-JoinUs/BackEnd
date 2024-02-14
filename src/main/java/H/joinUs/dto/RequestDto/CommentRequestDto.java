@@ -1,5 +1,22 @@
 package H.joinUs.dto.RequestDto;
 
-public class CommentRequestDto {
+import H.joinUs.domain.User;
+import lombok.*;
 
+public class CommentRequestDto {
+    @Builder
+    @Getter
+    @AllArgsConstructor(access= AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class CreateComment {
+        private String content;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access= AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UpdateComment {
+        private String content;
+    }
 }
