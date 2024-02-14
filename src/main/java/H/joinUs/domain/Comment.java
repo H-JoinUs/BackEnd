@@ -1,16 +1,15 @@
 package H.joinUs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity{
@@ -31,4 +30,12 @@ public class Comment extends BaseEntity{
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
+    @JsonIgnoreProperties
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void update(String content){
+        this.content = content;
+    }
 }
