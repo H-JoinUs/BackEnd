@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -32,4 +34,11 @@ public class CommentController {
                                               @PathVariable(name = "commentId") Long commentId) {
         commentService.delete(postId, commentId);
         return ResponseEntity.ok().build();
-    }}
+    }
+
+    @GetMapping(value = "/post/{postId}/comment/list")
+    public ResponseEntity<List<CommentResponseDto.GetComment>> getList(@PathVariable(name = "postId") Long postId){
+        return ResponseEntity.ok(commentService.get(postId));
+    }
+
+}
