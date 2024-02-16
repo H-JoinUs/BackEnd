@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +69,25 @@ public class CommentService {
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
 
         commentRepository.delete(comment);
+    }
+
+    public List<CommentResponseDto.GetComment> get(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        List<Comment> commentList = commentRepository.findCommentsByPost(post);
+
+        List<CommentResponseDto.GetComment> result = new ArrayList<>();
+
+        for(Comment comment: commentList){
+            CommentResponseDto.GetComment getComment = CommentResponseDto.GetComment.builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .createdAt(comment.getCreatedAt())
+                    .build();
+            result.add(getComment);
+        }
+
+        return result;
     }
 }
