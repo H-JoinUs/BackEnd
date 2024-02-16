@@ -55,4 +55,16 @@ public class CommentService {
                 .content(comment.getContent())
                 .build();
     }
+
+    @Transactional
+    public void delete(Long postId, Long commentId){
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        Comment comment = commentRepository.findByIdAndPost(commentId,post)
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+        commentRepository.delete(comment);
+    }
 }
