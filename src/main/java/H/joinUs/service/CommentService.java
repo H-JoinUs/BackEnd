@@ -90,4 +90,26 @@ public class CommentService {
 
         return result;
     }
+
+    @Transactional
+    public CommentResponseDto.CreateRecomment createRecomment(Long postId, Long commentId, CommentRequestDto.CreateRecomment request){
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+        Comment recomment = Comment.builder()
+                .post(post)
+                .content(request.getContent())
+                .comment(comment)
+                .build();
+        commentRepository.save(recomment);
+
+        return CommentResponseDto.CreateRecomment.builder()
+                .id(recomment.getId())
+                .content(recomment.getContent())
+                .build();
+    }
 }
