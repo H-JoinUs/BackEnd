@@ -133,4 +133,19 @@ public class CommentService {
                 .content(recomment.getContent())
                 .build();
     }
+
+    @Transactional
+    public void deleteRecomment(Long postId, Long commentId, Long recommentId){
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        Comment comment = commentRepository.findByIdAndPost(commentId,post)
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+        Comment recomment = commentRepository.findByIdAndCommentAndPost(recommentId, comment, post)
+                .orElseThrow(() -> new RuntimeException("대댓글을 찾을 수 없습니다."));
+
+        commentRepository.delete(recomment);
+    }
 }
