@@ -44,4 +44,13 @@ public class CommentResponseDto {
         private Long id;
         private String content;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UpdateRecomment {
+        private Long id;
+        private String content;
+    }
 }

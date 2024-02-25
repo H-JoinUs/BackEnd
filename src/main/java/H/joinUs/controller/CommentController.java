@@ -44,7 +44,14 @@ public class CommentController {
                                                                               @PathVariable(name = "commentId") Long commentId,
                                                                               @RequestBody CommentRequestDto.CreateRecomment request) {
         return ResponseEntity.ok(commentService.createRecomment(postId, commentId, request));
+    }
 
+    @PutMapping(value = "/post/{postId}/comment/{commentId}/recomment/{recommentId}")
+    public ResponseEntity<CommentResponseDto.UpdateRecomment> updateRecomment(@PathVariable(name = "postId") Long postId,
+                                                                              @PathVariable(name = "commentId") Long commentId,
+                                                                              @PathVariable(name = "recommentId") Long recommentId,
+                                                                              @RequestBody CommentRequestDto.UpdateRecomment request){
+        return ResponseEntity.ok(commentService.updateRecomment(postId, commentId, recommentId, request));
     }
 
 
