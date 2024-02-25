@@ -97,7 +97,7 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
 
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdAndPost(commentId,post)
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
 
         Comment recomment = Comment.builder()
@@ -108,6 +108,27 @@ public class CommentService {
         commentRepository.save(recomment);
 
         return CommentResponseDto.CreateRecomment.builder()
+                .id(recomment.getId())
+                .content(recomment.getContent())
+                .build();
+    }
+
+    @Transactional
+    public CommentResponseDto.UpdateRecomment updateRecomment(Long postId, Long commentId, Long recommentId, CommentRequestDto.UpdateRecomment request){
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+
+        Comment recomment = commentRepository.findByIdAndCommentAndPost(recommentId,comment,post)
+                .orElseThrow(() -> new RuntimeException("대댓글을 찾을 수 없습니다."));
+
+
+        recomment.update(request.getContent());
+
+        return CommentResponseDto.UpdateRecomment.builder()
                 .id(recomment.getId())
                 .content(recomment.getContent())
                 .build();
