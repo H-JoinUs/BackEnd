@@ -21,13 +21,13 @@ public class Comment extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private Comment comment;
+    private Comment parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
     @JsonIgnoreProperties

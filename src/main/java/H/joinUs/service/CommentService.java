@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,7 +24,6 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public CommentResponseDto.CreateComment create(Long postId, CommentRequestDto.CreateComment request){
@@ -74,20 +75,29 @@ public class CommentService {
     public List<CommentResponseDto.GetComment> get(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
-
-        List<Comment> commentList = commentRepository.findCommentsByPost(post);
+        List<Comment> commentList = commentRepository.findCommentsByParentAndPost(null,post);
 
         List<CommentResponseDto.GetComment> result = new ArrayList<>();
 
         for(Comment comment: commentList){
+            List<CommentResponseDto.GetRecomment> resultRecomment = new ArrayList<>();
+            List<Comment> comments = commentRepository.findAllByParent(comment);
+            for(Comment recomment : comments){
+                CommentResponseDto.GetRecomment getRecomment = CommentResponseDto.GetRecomment.builder()
+                        .id(recomment.getId())
+                        .content(recomment.getContent())
+                        .createdAt(recomment.getCreatedAt())
+                        .build();
+                resultRecomment.add(getRecomment);
+            }
             CommentResponseDto.GetComment getComment = CommentResponseDto.GetComment.builder()
                     .id(comment.getId())
                     .content(comment.getContent())
                     .createdAt(comment.getCreatedAt())
+                    .recomment(resultRecomment)
                     .build();
             result.add(getComment);
         }
-
         return result;
     }
 
@@ -103,7 +113,7 @@ public class CommentService {
         Comment recomment = Comment.builder()
                 .post(post)
                 .content(request.getContent())
-                .comment(comment)
+                .parent(comment)
                 .build();
         commentRepository.save(recomment);
 
@@ -122,15 +132,16 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
 
-        Comment recomment = commentRepository.findByIdAndCommentAndPost(recommentId,comment,post)
+
+
+        Comment recomment = commentRepository.findByIdAndParentAndPost(recommentId,comment,post)
                 .orElseThrow(() -> new RuntimeException("대댓글을 찾을 수 없습니다."));
 
 
         recomment.update(request.getContent());
 
         return CommentResponseDto.UpdateRecomment.builder()
-                .id(recomment.getId())
-                .content(recomment.getContent())
+                .id(recomment.getId()).content(recomment.getContent())
                 .build();
     }
 
@@ -143,7 +154,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdAndPost(commentId,post)
                 .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
 
-        Comment recomment = commentRepository.findByIdAndCommentAndPost(recommentId, comment, post)
+        Comment recomment = commentRepository.findByIdAndParentAndPost(recommentId, comment, post)
                 .orElseThrow(() -> new RuntimeException("대댓글을 찾을 수 없습니다."));
 
         commentRepository.delete(recomment);
