@@ -1,7 +1,9 @@
 package H.joinUs.controller;
 
+import H.joinUs.domain.Comment;
 import H.joinUs.dto.RequestDto.CommentRequestDto;
 import H.joinUs.dto.ResponseDto.CommentResponseDto;
+import H.joinUs.repository.CommentRepository;
 import H.joinUs.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +52,13 @@ public class CommentController {
     public ResponseEntity<CommentResponseDto.UpdateRecomment> updateRecomment(@PathVariable(name = "postId") Long postId,
                                                                               @PathVariable(name = "commentId") Long commentId,
                                                                               @PathVariable(name = "recommentId") Long recommentId,
-                                                                              @RequestBody CommentRequestDto.UpdateRecomment request){
+                                                                              @RequestBody CommentRequestDto.UpdateRecomment request) {
         return ResponseEntity.ok(commentService.updateRecomment(postId, commentId, recommentId, request));
     }
 
     @DeleteMapping(value = "/post/{postId}/comment/{commentId}/recomment/{recommentId}")
-    public ResponseEntity<Void> deleteRecomment(@PathVariable(name = "postId") Long postId,
-                                                @PathVariable(name = "commentId") Long commentId,
-                                                @PathVariable(name = "recommentId") Long recommentId){
+    public ResponseEntity<Void> deleteRecomment(@PathVariable(name = "postId") Long postId, @PathVariable(name = "commentId") Long commentId,
+                                                @PathVariable(name = "recommentId") Long recommentId) {
         commentService.deleteRecomment(postId, commentId, recommentId);
         return ResponseEntity.ok().build();
     }
